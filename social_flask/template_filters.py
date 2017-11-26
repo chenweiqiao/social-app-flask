@@ -2,13 +2,14 @@ from flask import g, request
 
 from social_core.backends.utils import user_backends_data
 from social_flask.utils import get_helper
+from flask_security import current_user
 
 
 def backends():
     """Load Social Auth current user data to context under the key 'backends'.
     Will return the output of social.backends.utils.user_backends_data."""
     return {
-        'backends': user_backends_data(g.user,
+        'backends': user_backends_data(current_user,
                                        get_helper('AUTHENTICATION_BACKENDS'),
                                        get_helper('STORAGE', do_import=True))
     }

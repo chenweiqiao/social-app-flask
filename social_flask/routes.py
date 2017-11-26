@@ -1,5 +1,5 @@
-from flask import g, Blueprint, request
-from flask_login import login_required, login_user
+from flask import g, Blueprint, request, session
+from flask_security import login_required, login_user, current_user
 
 from social_core.actions import do_auth, do_complete, do_disconnect
 from social_flask.utils import psa
@@ -19,7 +19,7 @@ def auth(backend):
 def complete(backend, *args, **kwargs):
     """Authentication complete view, override this view if transaction
     management doesn't suit your needs."""
-    return do_complete(g.backend, login=do_login, user=g.user,
+    return do_complete(g.backend, login=do_login, user=current_user,
                        *args, **kwargs)
 
 
@@ -32,7 +32,7 @@ def complete(backend, *args, **kwargs):
 @psa()
 def disconnect(backend, association_id=None):
     """Disconnects given backend from current logged in user."""
-    return do_disconnect(g.backend, g.user, association_id)
+    return do_disconnect(g.backend, current_user, association_id)
 
 
 def do_login(backend, user, social_user):
